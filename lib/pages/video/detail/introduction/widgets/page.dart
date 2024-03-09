@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pilipala/models/video_detail_res.dart';
 import 'package:pilipala/pages/video/detail/index.dart';
+import 'package:pilipala/utils/id_utils.dart';
 
 class PagesPanel extends StatefulWidget {
   const PagesPanel({
@@ -44,9 +45,12 @@ class _PagesPanelState extends State<PagesPanel> {
 
   void changeFucCall(item, i) async {
     await widget.changeFuc!(
+      IdUtils.av2bv(item.aid),
       item.cid,
+      item.aid,
     );
     currentIndex = i;
+    Get.back();
     setState(() {});
   }
 

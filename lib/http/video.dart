@@ -28,6 +28,7 @@ class VideoHttp {
 
   // 首页推荐视频
   static Future rcmdVideoList({required int ps, required int freshIdx}) async {
+      return {'status': true, 'data': []};
     try {
       var res = await Request().get(
         Api.recommendListWeb,
