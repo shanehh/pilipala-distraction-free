@@ -392,9 +392,8 @@ class _VideoInfoState extends State<VideoInfo> with TickerProviderStateMixin {
                           pages: widget.videoDetail!.pages!,
                           cid: videoIntroController.lastPlayCid.value,
                           sheetHeight: sheetHeight,
-                          changeFuc: (cid) =>
-                              videoIntroController.changeSeasonOrbangu(
-                                  videoIntroController.bvid, cid, null),
+                        changeFuc: (bvid, cid, aid) => videoIntroController
+                            .changeSeasonOrbangu(bvid, cid, aid),
                         ))
                   ],
                   GestureDetector(
