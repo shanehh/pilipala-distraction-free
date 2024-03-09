@@ -18,7 +18,7 @@ class MainController extends GetxController {
   List<Widget> pages = <Widget>[
     const MediaPage(),
     const DynamicsPage(),
-    // const HomePage(),
+    const HomePage(),
   ];
   RxList navigationBars = defaultNavigationBars.obs;
   final StreamController<bool> bottomBarStream =

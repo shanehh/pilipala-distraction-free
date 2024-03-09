@@ -11,6 +11,11 @@ import 'index.dart';
 class SearchHttp {
   static Box setting = GStrorage.setting;
   static Future hotSearchList() async {
+    return {
+      'status': true,
+      'data': [],
+    };
+
     var res = await Request().get(Api.hotSearchList);
     if (res.data is String) {
       Map<String, dynamic> resultMap = json.decode(res.data);
@@ -36,6 +41,11 @@ class SearchHttp {
 
   // 获取搜索建议
   static Future searchSuggest({required term}) async {
+    return {
+      'status': true,
+      'data': [],
+    };
+
     var res = await Request().get(Api.searchSuggest,
         data: {'term': term, 'main_ver': 'v1', 'highlight': term});
     if (res.data is String) {

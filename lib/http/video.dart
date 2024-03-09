@@ -114,6 +114,7 @@ class VideoHttp {
 
   // 最热视频
   static Future hotVideoList({required int pn, required int ps}) async {
+    return {'status': true, 'data': []};
     try {
       var res = await Request().get(
         Api.hotList,
@@ -212,6 +213,8 @@ class VideoHttp {
 
   // 相关视频
   static Future relatedVideoList({required String bvid}) async {
+  return {'status': true, 'data': []};
+
     var res = await Request().get(Api.relatedList, data: {'bvid': bvid});
     if (res.data['code'] == 0) {
       List<HotVideoItemModel> list = [];
