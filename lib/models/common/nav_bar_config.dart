@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 List defaultNavigationBars = [
   {
-    'id': 1,
+    'id': 0,
     'icon': const Icon(
       Icons.motion_photos_on_outlined,
       size: 21,
@@ -15,7 +15,7 @@ List defaultNavigationBars = [
     'count': 0,
   },
   {
-    'id': 2,
+    'id': 1,
     'icon': const Icon(
       Icons.video_collection_outlined,
       size: 20,
@@ -28,7 +28,7 @@ List defaultNavigationBars = [
     'count': 0,
   },
   {
-    'id': 0,
+    'id': 2,
     'icon': const Icon(
       Icons.home_outlined,
       size: 21,

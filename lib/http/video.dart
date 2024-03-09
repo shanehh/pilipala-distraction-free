@@ -68,6 +68,8 @@ class VideoHttp {
   // 添加额外的loginState变量模拟未登录状态
   static Future rcmdVideoListApp(
       {bool loginStatus = true, required int freshIdx}) async {
+    return {'status': true, 'data': []};
+    
     try {
       var res = await Request().get(
         Api.recommendListApp,

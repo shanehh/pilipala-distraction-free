@@ -7,6 +7,10 @@ import 'init.dart';
 class LiveHttp {
   static Future liveList(
       {int? vmid, int? pn, int? ps, String? orderType}) async {
+    return {
+        'status': true,
+        'data': [],
+    };
     var res = await Request().get(Api.liveList,
         data: {'page': pn, 'page_size': 30, 'platform': 'web'});
     if (res.data['code'] == 0) {
