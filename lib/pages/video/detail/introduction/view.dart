@@ -309,7 +309,7 @@ class _VideoInfoState extends State<VideoInfo> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              if (enableAi)
+              if (false)
                 Positioned(
                   right: 10,
                   top: 6,
