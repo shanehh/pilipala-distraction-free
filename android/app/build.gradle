@@ -63,6 +63,7 @@ android {
         versionName flutterVersionName
         minSdkVersion 21
         multiDexEnabled true
+        ndk.abiFilters 'arm64-v8a'
     }
 
     signingConfigs {
@@ -82,7 +83,7 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 }

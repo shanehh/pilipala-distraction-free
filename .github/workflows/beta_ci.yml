@@ -113,7 +113,7 @@ jobs:
           sed -i "s/version: .*+/version: ${{ needs.update_version.outputs.new_version }}+/g" pubspec.yaml
 
       - name: flutter build apk
-        run: flutter build apk --release --split-per-abi
+        run: flutter build apk --target-platform android-arm64 --split-per-abi
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -135,74 +135,74 @@ jobs:
           path: |
             build/app/outputs/flutter-apk/Pili-*.apk
 
-  iOS:
-    name: Build CI (iOS)
-    needs: update_version
-    runs-on: macos-latest
+  # iOS:
+  #   name: Build CI (iOS)
+  #   needs: update_version
+  #   runs-on: macos-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: ${{ github.ref_name }}
 
-      - name: 安装Flutter
-        if: steps.cache-flutter.outputs.cache-hit != 'true'
-        uses: subosito/flutter-action@v2.10.0
-        with:
-          cache: true
-          flutter-version: 3.16.5
+  #     - name: 安装Flutter
+  #       if: steps.cache-flutter.outputs.cache-hit != 'true'
+  #       uses: subosito/flutter-action@v2.10.0
+  #       with:
+  #         cache: true
+  #         flutter-version: 3.16.5
 
-      - name: 更新版本号
-        id: version
-        run: |
-          # 更新pubspec.yaml文件中的版本号
-          sed -i "" "s/version: .*+/version: ${{ needs.update_version.outputs.new_version }}+/g" pubspec.yaml
+  #     - name: 更新版本号
+  #       id: version
+  #       run: |
+  #         # 更新pubspec.yaml文件中的版本号
+  #         sed -i "" "s/version: .*+/version: ${{ needs.update_version.outputs.new_version }}+/g" pubspec.yaml
 
-      - name: flutter build ipa
-        run: |
-          flutter build ios --release --no-codesign 
-          ln -sf ./build/ios/iphoneos Payload
-          zip -r9 app.ipa Payload/runner.app
+  #     - name: flutter build ipa
+  #       run: |
+  #         flutter build ios --release --no-codesign 
+  #         ln -sf ./build/ios/iphoneos Payload
+  #         zip -r9 app.ipa Payload/runner.app
 
-      - name: 重命名应用
-        run: |
-          DATE=${{ steps.date.outputs.date }}
-          for file in app.ipa; do
-            new_file_name="build/Pili-v${{ needs.update_version.outputs.new_version }}.ipa"
-            mv "$file" "$new_file_name"
-          done
+  #     - name: 重命名应用
+  #       run: |
+  #         DATE=${{ steps.date.outputs.date }}
+  #         for file in app.ipa; do
+  #           new_file_name="build/Pili-v${{ needs.update_version.outputs.new_version }}.ipa"
+  #           mv "$file" "$new_file_name"
+  #         done
 
-      - name: 上传
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: Pilipala-Beta
-          path: |
-            build/Pili-*.ipa
+  #     - name: 上传
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         if-no-files-found: error
+  #         name: Pilipala-Beta
+  #         path: |
+  #           build/Pili-*.ipa
 
-  upload:
-    runs-on: ubuntu-latest
+  # upload:
+  #   runs-on: ubuntu-latest
 
-    needs:
-      - update_version
-      - android
-      - iOS
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: Pilipala-Beta
-          path: ./Pilipala-Beta
+  #   needs:
+  #     - update_version
+  #     - android
+  #     - iOS
+  #   steps:
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: Pilipala-Beta
+  #         path: ./Pilipala-Beta
 
-      - name: 发送到Telegram频道
-        uses: xireiki/channel-post@v1.0.7
-        with:
-          bot_token: ${{ secrets.BOT_TOKEN }}
-          chat_id: ${{ secrets.CHAT_ID }}
-          large_file: true
-          api_id: ${{ secrets.TELEGRAM_API_ID }}
-          api_hash: ${{ secrets.TELEGRAM_API_HASH }}
-          method: sendFile
-          path: Pilipala-Beta/*
-          parse_mode: Markdown
-          context: "*Beta版本: v${{ needs.update_version.outputs.new_version }}*\n更新内容: [${{ needs.update_version.outputs.last_commit }}](${{ github.event.head_commit.url }})"
+  #     - name: 发送到Telegram频道
+  #       uses: xireiki/channel-post@v1.0.7
+  #       with:
+  #         bot_token: ${{ secrets.BOT_TOKEN }}
+  #         chat_id: ${{ secrets.CHAT_ID }}
+  #         large_file: true
+  #         api_id: ${{ secrets.TELEGRAM_API_ID }}
+  #         api_hash: ${{ secrets.TELEGRAM_API_HASH }}
+  #         method: sendFile
+  #         path: Pilipala-Beta/*
+  #         parse_mode: Markdown
+  #         context: "*Beta版本: v${{ needs.update_version.outputs.new_version }}*\n更新内容: [${{ needs.update_version.outputs.last_commit }}](${{ github.event.head_commit.url }})"
