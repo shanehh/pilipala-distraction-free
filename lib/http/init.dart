@@ -189,6 +189,17 @@ class Request {
    * get请求
    */
   get(url, {data, options, cancelToken, extra}) async {
+    // if url equals "BLOCKED", return empty response
+    if (url == 'BLOCKED') {
+      return Response(
+        data: {
+          'message': 'blocked'
+        }, // 将自定义 Map 数据赋值给 Response 的 data 属性
+        statusCode: 200,
+        requestOptions: RequestOptions(),
+      );
+    }
+    
     Response response;
     final Options options = Options();
     ResponseType resType = ResponseType.json;
@@ -225,6 +236,20 @@ class Request {
    */
   post(url, {data, queryParameters, options, cancelToken, extra}) async {
     // print('post-data: $data');
+
+    // if url equals "BLOCKED", return empty response
+    if (url == 'BLOCKED') {
+      return Response(
+        data: {
+          'message': 'blocked'
+        }, // 将自定义 Map 数据赋值给 Response 的 data 属性
+        statusCode: 200,
+        requestOptions: RequestOptions(),
+      );
+    }
+    
+
+    
     Response response;
     try {
       response = await dio.post(

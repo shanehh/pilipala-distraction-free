@@ -2,12 +2,11 @@ import 'constants.dart';
 
 class Api {
   // 推荐视频
-  static const String recommendListApp =
-      '${HttpString.appBaseUrl}/x/v2/feed/index';
-  static const String recommendListWeb = '/x/web-interface/index/top/feed/rcmd';
+  static const String recommendListApp = 'BLOCKED';
+  static const String recommendListWeb = 'BLOCKED';
 
   // 热门视频
-  static const String hotList = '/x/web-interface/popular';
+  static const String hotList = 'BLOCKED';
 
   // 视频流
   // https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/videostream_url.md
@@ -91,7 +90,7 @@ class Api {
   static const String videoInFolder = '/x/v3/fav/folder/created/list-all';
 
   // 视频详情页 相关视频
-  static const String relatedList = '/x/web-interface/archive/related';
+  static const String relatedList = 'BLOCKED';
 
   // 查询用户与自己关系_仅查关注
   static const String hasFollow = '/x/relation';
@@ -178,11 +177,10 @@ class Api {
   static const String searchHistory = '/x/web-goblin/history/search';
 
   // 热搜
-  static const String hotSearchList =
-      'https://s.search.bilibili.com/main/hotword';
+  static const String hotSearchList = 'BLOCKED';
 
   // 默认搜索词
-  static const String searchDefault = '/x/web-interface/wbi/search/default';
+  static const String searchDefault = 'BLOCKED';
 
   // 搜索关键词
   static const String searchSuggest =
@@ -224,8 +222,7 @@ class Api {
 
   // 直播
   // ?page=1&page_size=30&platform=web
-  static const String liveList =
-      '${HttpString.liveBaseUrl}/xlive/web-interface/v1/second/getUserRecommend';
+  static const String liveList = 'BLOCKED';
 
   // 直播间详情
   // cid roomId
@@ -312,8 +309,7 @@ class Api {
   static const String removeBlack = '/x/relation/modify';
 
   // github 获取最新版
-  static const String latestApp =
-      'https://api.github.com/repos/guozhigq/pilipala/releases/latest';
+  static const String latestApp = 'BLOCKED';
 
   // 多少人在看
   // https://api.bilibili.com/x/player/online/total?aid=913663681&cid=1203559746&bvid=BV1MM4y1s7NZ&ts=56427838
