@@ -64,35 +64,38 @@ class _SearchResultPageState extends State<SearchResultPage>
                 splashColor: Colors.transparent, // 点击时的水波纹颜色设置为透明
                 highlightColor: Colors.transparent, // 点击时的背景高亮颜色设置为透明
               ),
-              child: TabBar(
-                controller: _tabController,
-                tabs: [
-                  for (var i in SearchType.values) Tab(text: i.label),
-                ],
-                isScrollable: true,
-                indicatorWeight: 0,
-                indicatorPadding:
-                    const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
-                indicator: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                ),
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Theme.of(context).colorScheme.onSecondaryContainer,
-                labelStyle: const TextStyle(fontSize: 13),
-                dividerColor: Colors.transparent,
-                unselectedLabelColor: Theme.of(context).colorScheme.outline,
-                tabAlignment: TabAlignment.start,
-                onTap: (index) {
-                  if (index == _searchResultController!.tabIndex) {
-                    Get.find<SearchPanelController>(
-                            tag: SearchType.values[index].type +
-                                _searchResultController!.keyword!)
-                        .animateToTop();
-                  }
+              child: Visibility(
+                visible: false,
+                child: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    for (var i in SearchType.values) Tab(text: i.label),
+                  ],
+                  isScrollable: true,
+                  indicatorWeight: 0,
+                  indicatorPadding:
+                      const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                  indicator: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                  labelStyle: const TextStyle(fontSize: 13),
+                  dividerColor: Colors.transparent,
+                  unselectedLabelColor: Theme.of(context).colorScheme.outline,
+                  tabAlignment: TabAlignment.start,
+                  onTap: (index) {
+                    if (index == _searchResultController!.tabIndex) {
+                      Get.find<SearchPanelController>(
+                              tag: SearchType.values[index].type +
+                                  _searchResultController!.keyword!)
+                          .animateToTop();
+                    }
 
-                  _searchResultController!.tabIndex = index;
-                },
+                    _searchResultController!.tabIndex = index;
+                  },
+                )
               ),
             ),
           ),
