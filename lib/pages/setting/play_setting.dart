@@ -33,7 +33,7 @@ class _PlaySettingState extends State<PlaySetting> {
   void initState() {
     super.initState();
     defaultVideoQa = setting.get(SettingBoxKey.defaultVideoQa,
-        defaultValue: VideoQuality.values.last.code);
+        defaultValue: VideoQuality.values.first.code);
     defaultLiveQa = setting.get(SettingBoxKey.defaultLiveQa,
         defaultValue: LiveQuality.values.last.code);
     defaultAudioQa = setting.get(SettingBoxKey.defaultAudioQa,
@@ -106,7 +106,7 @@ class _PlaySettingState extends State<PlaySetting> {
             title: '后台播放',
             subTitle: '进入后台时继续播放',
             setKey: SettingBoxKey.enableBackgroundPlay,
-            defaultVal: false,
+            defaultVal: true,
           ),
           if (Platform.isAndroid)
             const SetSwitchItem(
