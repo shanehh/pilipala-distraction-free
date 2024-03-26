@@ -575,9 +575,6 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                           .withOpacity(0.06),
                                     ),
                                   ),
-                                  if (vdCtr.videoType == SearchType.video &&
-                                      vdCtr.enableRelatedVideo)
-                                    const RelatedVideoPanel(),
                                 ],
                               );
                             },
