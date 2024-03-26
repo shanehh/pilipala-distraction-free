@@ -18,9 +18,6 @@ import '../../models/common/nav_bar_config.dart';
 class MainController extends GetxController {
   List<Widget> pages = <Widget>[
     const HomePage(),
-    const RankPage(),
-    const DynamicsPage(),
-    const MediaPage(),
   ];
   RxList navigationBars = defaultNavigationBars.obs;
   final StreamController<bool> bottomBarStream =
@@ -37,9 +34,6 @@ class MainController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (setting.get(SettingBoxKey.autoUpdate, defaultValue: false)) {
-      Utils.checkUpdata();
-    }
     hideTabBar = setting.get(SettingBoxKey.hideTabBar, defaultValue: true);
     int defaultHomePage =
         setting.get(SettingBoxKey.defaultHomePage, defaultValue: 0) as int;
@@ -50,9 +44,6 @@ class MainController extends GetxController {
     dynamicBadgeType.value = DynamicBadgeMode.values[setting.get(
         SettingBoxKey.dynamicBadgeMode,
         defaultValue: DynamicBadgeMode.number.code)];
-    if (dynamicBadgeType.value != DynamicBadgeMode.hidden) {
-      getUnreadDynamic();
-    }
   }
 
   void onBackPressed(BuildContext context) {
