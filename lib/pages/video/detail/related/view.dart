@@ -76,7 +76,7 @@ class _RelatedVideoPanelState extends State<RelatedVideoPanel>
             );
           } else {
             // 请求错误
-            return HttpError(errMsg: '出错了', fn: () {});
+            return Visibility(visible: false, child: HttpError(errMsg: '出错了', fn: () {}));
           }
         } else {
           // 骨架屏
