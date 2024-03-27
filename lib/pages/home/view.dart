@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:pilipala/common/widgets/network_img_layer.dart';
+import 'package:pilipala/pages/history/index.dart';
 import 'package:pilipala/pages/mine/index.dart';
 import 'package:pilipala/utils/feed_back.dart';
 import './controller.dart';
@@ -23,6 +25,14 @@ import 'package:pilipala/models/user/fav_folder.dart';
 import 'package:pilipala/pages/main/index.dart';
 import 'package:pilipala/pages/media/index.dart';
 import 'package:pilipala/utils/utils.dart';
+import 'package:pilipala/pages/history/widgets/continueitem.dart';
+import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pilipala/common/skeleton/video_card_h.dart';
+import 'package:pilipala/common/widgets/http_error.dart';
+import 'package:pilipala/common/widgets/no_data.dart';
+import 'package:pilipala/pages/history/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -37,7 +47,10 @@ class _HomePageState extends State<HomePage>
   List videoList = [];
   late Stream<bool> stream;
   late MediaController mediaController;
-  late Future _futureBuilderFuture;
+  late HistoryController historyController;
+
+  late Future favFolderQueryFuture;
+  late Future historyQueryFuture;
 
   @override
   bool get wantKeepAlive => true;
@@ -47,14 +60,18 @@ class _HomePageState extends State<HomePage>
     super.initState();
     stream = _homeController.searchBarStream.stream;
     mediaController = Get.put(MediaController());
-    _futureBuilderFuture = mediaController.queryFavFolder();
+    favFolderQueryFuture = mediaController.queryFavFolder();
+    historyController = Get.put(HistoryController());
+    historyQueryFuture = historyController.queryHistoryList(ps: 1);
+
     ScrollController scrollController = mediaController.scrollController;
     StreamController<bool> mainStream =
         Get.find<MainController>().bottomBarStream;
 
     mediaController.userLogin.listen((status) {
       setState(() {
-        _futureBuilderFuture = mediaController.queryFavFolder();
+        favFolderQueryFuture = mediaController.queryFavFolder();
+        historyQueryFuture = historyController.queryHistoryList(ps: 1);
       });
     });
     scrollController.addListener(
@@ -68,7 +85,6 @@ class _HomePageState extends State<HomePage>
         }
       },
     );
-
   }
 
   showUserBottomSheet() {
@@ -147,37 +163,116 @@ class _HomePageState extends State<HomePage>
               // padding top
               const SizedBox(height: 22),
               for (var i in mediaController.list) ...[
-              ListTile(
-                onTap: () => i['onTap'](),
-                dense: true,
-                leading: Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Icon(
-                    i['icon'],
-                    color: primary,
+                // '我的订阅'，'稍后再看'
+                ListTile(
+                  onTap: () => i['onTap'](),
+                  dense: true,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Icon(
+                      i['icon'],
+                      color: primary,
+                    ),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.only(left: 15, top: 2, bottom: 2),
+                  minLeadingWidth: 0,
+                  title: Text(
+                    i['title'],
+                    style: const TextStyle(fontSize: 15),
                   ),
                 ),
-                contentPadding:
-                    const EdgeInsets.only(left: 15, top: 2, bottom: 2),
-                minLeadingWidth: 0,
-                title: Text(
-                  i['title'],
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ),
-            ],
-            Obx(() => mediaController.userLogin.value
-                ? favFolder(mediaController, context)
-                : const SizedBox()),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom +
-                  kBottomNavigationBarHeight,
-            )
+              ],
+              // 继续观看（观看记录最近两条视频）和收藏夹
+              // continuableWatching(historyController, context)
+              // favFolder(mediaController, context)
+              Obx(() => mediaController.userLogin.value
+                  ? Column(children: [
+                      continuableWatching(historyController, context),
+                      favFolder(mediaController, context),
+                    ])
+                  : const SizedBox.shrink()),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Widget continuableWatching(historyController, context) {
+    return Column(children: [
+      Divider(
+        height: 35,
+        color: Theme.of(context).dividerColor.withOpacity(0.1),
+      ),
+      ListTile(
+        onTap: () {},
+        leading: null,
+        dense: true,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '继续观看',
+                  style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleMedium!.fontSize,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+        trailing: IconButton(
+          onPressed: () {
+            setState(() {
+              historyQueryFuture = historyController.queryHistoryList(ps: 1);
+            });
+          },
+          icon: const Icon(
+            Icons.refresh,
+            size: 20,
+          ),
+        ),
+      ),
+      SizedBox(
+        width: double.infinity,
+        height: 130,
+        child: FutureBuilder(
+            future: historyQueryFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.data == null) {
+                  return const SizedBox();
+                }
+                Map data = snapshot.data as Map;
+                if (data['status']) {
+                  List historyList = historyController.historyList;
+                  // return Text(historyList.length.toString());
+                  return Obx(() => ListView.builder(
+                        itemCount: historyList.length,
+                        itemBuilder: (context, index) {
+                          return HistoryItem(
+                            videoItem: historyList[index],
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      ));
+                } else {
+                  return SizedBox(
+                    height: 160,
+                    child: Center(child: Text(data['msg'])),
+                  );
+                }
+              } else {
+                // 骨架屏
+                return const SizedBox();
+              }
+            }),
+      )
+    ]);
   }
 
   Widget favFolder(mediaController, context) {
@@ -222,7 +317,7 @@ class _HomePageState extends State<HomePage>
           trailing: IconButton(
             onPressed: () {
               setState(() {
-                _futureBuilderFuture = mediaController.queryFavFolder();
+                favFolderQueryFuture = mediaController.queryFavFolder();
               });
             },
             icon: const Icon(
@@ -231,12 +326,11 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-        // const SizedBox(height: 10),
         SizedBox(
           width: double.infinity,
           height: MediaQuery.textScalerOf(context).scale(200),
           child: FutureBuilder(
-              future: _futureBuilderFuture,
+              future: favFolderQueryFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.data == null) {
@@ -307,6 +401,7 @@ class _HomePageState extends State<HomePage>
     );
   }
 }
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
   final Stream<bool>? stream;
@@ -589,7 +684,6 @@ class SearchBar extends StatelessWidget {
     );
   }
 }
-
 
 class FavFolderItem extends StatelessWidget {
   const FavFolderItem({super.key, this.item, this.index});

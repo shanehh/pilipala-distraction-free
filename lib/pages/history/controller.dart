@@ -22,7 +22,7 @@ class HistoryController extends GetxController {
     historyStatus();
   }
 
-  Future queryHistoryList({type = 'init'}) async {
+  Future queryHistoryList({type = 'init', ps = 20}) async {
     int max = 0;
     int viewAt = 0;
     if (type == 'onload') {
@@ -30,7 +30,7 @@ class HistoryController extends GetxController {
       viewAt = historyList.last.viewAt!;
     }
     isLoadingMore.value = true;
-    var res = await UserHttp.historyList(max, viewAt);
+    var res = await UserHttp.historyList(max, viewAt, ps);
     isLoadingMore.value = false;
     if (res['status']) {
       if (type == 'onload') {
