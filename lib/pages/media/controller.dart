@@ -12,21 +12,9 @@ class MediaController extends GetxController {
   RxBool userLogin = false.obs;
   List list = [
     {
-      'icon': Icons.file_download_outlined,
-      'title': '离线缓存',
-      'onTap': () {
-        SmartDialog.showToast('功能开发中');
-      },
-    },
-    {
       'icon': Icons.history,
       'title': '观看记录',
       'onTap': () => Get.toNamed('/history'),
-    },
-    {
-      'icon': Icons.star_border,
-      'title': '我的收藏',
-      'onTap': () => Get.toNamed('/fav'),
     },
     {
       'icon': Icons.subscriptions_outlined,
