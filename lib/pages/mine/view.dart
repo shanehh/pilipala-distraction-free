@@ -45,7 +45,7 @@ class _MinePageState extends State<MinePage> {
         backgroundColor: Colors.transparent,
         centerTitle: false,
         title: const Text(
-          'PLPL',
+          'PLPL(Jio 24岁生日学习版🎂)',
           style: TextStyle(
             height: 2.8,
             fontSize: 17,
